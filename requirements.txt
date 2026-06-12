@@ -1,0 +1,6 @@
+PySide6
+pandas
+openpyxl
+pypdf
+PyPDF2
+pywin32
