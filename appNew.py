@@ -1850,9 +1850,30 @@ class MainWindow(QMainWindow):
             f"For more help contact: {EMAIL}\n"
         )
         layout.addWidget(instr, 1)
-        btn_update = QPushButton("Check For Updates")
-        btn_update.clicked.connect(self.manual_check_updates)
-        layout.addWidget(btn_update)
+        self.btn_about_update = QPushButton("Check For Updates")
+        self.btn_about_update.clicked.connect(self.manual_check_updates)
+        layout.addWidget(self.btn_about_update)
+
+        # Check GitHub silently and change About button text if an update exists.
+        QTimer.singleShot(800, self.refresh_about_update_button)
+
+    def refresh_about_update_button(self):
+        try:
+            available, info = check_update_available()
+
+            if available and info:
+                latest = info.get("version", "")
+                self.btn_about_update.setText(f"Update Available - Install V{latest}")
+                self.btn_about_update.setStyleSheet(
+                    "background:#0a3a80; color:white; font-weight:bold; padding:8px;"
+                )
+            else:
+                self.btn_about_update.setText("Check For Updates")
+                self.btn_about_update.setStyleSheet("")
+
+        except Exception:
+            self.btn_about_update.setText("Check For Updates")
+            self.btn_about_update.setStyleSheet("")
 
     # ── UI helpers ────────────────────────────────────────────
     def _add_spool_from_drag(self, path):
